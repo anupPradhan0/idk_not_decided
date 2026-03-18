@@ -9,8 +9,8 @@ import { analyzeRepo } from './lib/mockApi'
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-svh bg-[radial-gradient(80%_55%_at_30%_0%,rgba(80,220,255,0.16),transparent_60%),radial-gradient(65%_55%_at_85%_15%,rgba(0,255,166,0.10),transparent_55%),linear-gradient(to_bottom,rgba(7,10,18,1),rgba(5,7,12,1))] text-white">
-      <div className="pointer-events-none fixed inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:44px_44px]" />
+    <div className="min-h-svh text-white">
+      <div className="aiext-grid pointer-events-none fixed inset-0 opacity-[0.14]" />
       <div className="relative">{children}</div>
     </div>
   )
@@ -57,6 +57,7 @@ export default function App() {
   const [repoUrl, setRepoUrl] = useState('')
   const [submittedRepoUrl, setSubmittedRepoUrl] = useState('')
   const [activeTab, setActiveTab] = useState<TabId>('overview')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const analyzingRepoUrl = useMemo(() => submittedRepoUrl, [submittedRepoUrl])
 
@@ -71,12 +72,6 @@ export default function App() {
 
   return (
     <Shell>
-      <style>{`
-        :root { --accent: #50dcff; }
-        .font-display { font-family: "Sora", ui-sans-serif, system-ui, sans-serif; }
-        .font-mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-      `}</style>
-
       {!submittedRepoUrl ? (
         <HeroInput
           onConnect={(url: string) => {
@@ -85,14 +80,63 @@ export default function App() {
           }}
         />
       ) : (
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-          <div className="grid min-h-[calc(100svh-3rem)] grid-cols-1 overflow-hidden rounded-3xl border border-white/10 bg-black/10 shadow-[0_20px_80px_rgba(0,0,0,0.5)] lg:grid-cols-[280px_1fr]">
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
+          <div className="grid min-h-[calc(100svh-2.5rem)] grid-cols-1 overflow-hidden rounded-3xl border border-[color:var(--stroke)] bg-[rgba(0,0,0,0.18)] shadow-[0_18px_70px_rgba(0,0,0,0.55)] lg:grid-cols-[280px_1fr]">
+            {/* Mobile drawer */}
+            <div
+              className={[
+                'fixed inset-0 z-40 lg:hidden',
+                sidebarOpen ? '' : 'pointer-events-none',
+              ].join(' ')}
+            >
+              <div
+                className={[
+                  'absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200',
+                  sidebarOpen ? 'opacity-100' : 'opacity-0',
+                ].join(' ')}
+                onClick={() => setSidebarOpen(false)}
+              />
+              <div
+                className={[
+                  'absolute left-0 top-0 h-full w-[86vw] max-w-[320px] transition-transform duration-200',
+                  sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+                ].join(' ')}
+              >
+                <Sidebar
+                  activeTab={activeTab}
+                  setActiveTab={(t) => {
+                    setActiveTab(t)
+                    setSidebarOpen(false)
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="hidden lg:block">
+              <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
 
             <div className="flex min-w-0 flex-col">
-              <header className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
+              <header className="flex flex-wrap items-center justify-between gap-3 border-b border-[color:var(--stroke)] px-4 py-4 sm:px-5">
                 <div>
-                  <div className="font-display text-lg font-semibold text-white">
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      className="grid h-10 w-10 place-items-center rounded-xl border border-[color:var(--stroke)] bg-[color:var(--panel)] text-white/80 transition hover:bg-[color:var(--panel2)] lg:hidden"
+                      onClick={() => setSidebarOpen(true)}
+                      aria-label="Open sidebar"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M4 6h16M4 12h16M4 18h16"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
+
+                    <div className="font-display text-lg font-semibold text-white">
                     {activeTab === 'overview'
                       ? 'Overview'
                       : activeTab === 'extensions'
@@ -101,8 +145,9 @@ export default function App() {
                           ? 'Users'
                           : 'Settings'}
                   </div>
+                  </div>
                   <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-white/55">
-                    <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono">
+                    <span className="rounded-full border border-[color:var(--stroke)] bg-[color:var(--panel)] px-3 py-1 font-mono text-white/60">
                       repo
                     </span>
                     <span className="font-mono text-white/70">{repoUrl}</span>
@@ -116,14 +161,14 @@ export default function App() {
                     setRepoUrl('')
                     setActiveTab('overview')
                   }}
-                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/7"
+                  className="rounded-xl border border-[color:var(--stroke)] bg-[color:var(--panel)] px-4 py-2 text-xs font-semibold text-white/80 transition hover:bg-[color:var(--panel2)]"
                 >
                   Disconnect
                 </button>
               </header>
 
-              <main className="min-w-0 flex-1 px-5 py-5">
-                <div className="transition-opacity duration-300">
+              <main className="min-w-0 flex-1 px-4 py-4 sm:px-5 sm:py-5">
+                <div className="transition-all duration-250 ease-out">
                   {!connected ? (
                     analysis.isError ? (
                       <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-5">
@@ -148,7 +193,7 @@ export default function App() {
                           </button>
                           <button
                             type="button"
-                            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/7"
+                            className="rounded-xl border border-[color:var(--stroke)] bg-[color:var(--panel)] px-4 py-2 text-xs font-semibold text-white/80 transition hover:bg-[color:var(--panel2)]"
                             onClick={() => analysis.refetch()}
                           >
                             Retry
