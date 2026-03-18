@@ -24,7 +24,7 @@ function LoadingPanel({ label }: { label: string }) {
         <div className="text-sm text-white/70">{label}</div>
       </div>
       <div className="mt-3 font-mono text-xs text-white/45">
-        mapping code surface area • finding extension points • indexing prompts
+        mock analysis • placeholder data • UI sandbox
       </div>
     </div>
   )
@@ -35,7 +35,7 @@ function SettingsPlaceholder() {
     <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
       <h2 className="font-display text-base font-semibold text-white">Settings</h2>
       <p className="mt-2 text-sm text-white/60">
-        Placeholder settings panel (theme, auth, billing, prompt policies).
+        Placeholder settings panel (theme, prompt policies, future ideas).
       </p>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -44,7 +44,7 @@ function SettingsPlaceholder() {
         </div>
         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
           <div className="text-xs text-white/55">Default model</div>
-          <div className="mt-2 font-mono text-sm text-white/80">aiext/gpt-x</div>
+          <div className="mt-2 font-mono text-sm text-white/80">mock://model</div>
         </div>
       </div>
     </div>
