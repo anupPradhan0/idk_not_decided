@@ -21,7 +21,7 @@ export default function HeroInput({ onConnect }: { onConnect: (url: string) => v
       <section className="mx-auto max-w-5xl px-6 pb-10 pt-16 sm:pt-20">
         <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/80 backdrop-blur">
           <span className="inline-flex h-2 w-2 rounded-full bg-[color:var(--accent)] shadow-[0_0_18px_rgba(80,220,255,0.65)]" />
-          Universal AI extension platform
+          Open-source playground for AI extensibility
         </div>
 
         <div className="mt-6 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-start">
@@ -30,8 +30,9 @@ export default function HeroInput({ onConnect }: { onConnect: (url: string) => v
               aiext
             </h1>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/70 sm:text-base">
-              Plug aiext into your SaaS. Let your users ship custom features by writing prompts —
-              like “Stripe for AI extensibility”.
+              aiext is an open-source hobby project exploring “AI extensibility” — the idea that
+              users can build features with prompts on top of your codebase. It’s a sandbox right
+              now, not a polished product.
             </p>
 
             <div className="mt-7 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
@@ -74,7 +75,7 @@ export default function HeroInput({ onConnect }: { onConnect: (url: string) => v
                 </p>
               ) : (
                 <p className="mt-2 text-xs text-white/45">
-                  We’ll run a quick analysis and generate your aiext dashboard.
+                  This uses mock data + fake “analysis” calls (for now).
                 </p>
               )}
             </div>
@@ -92,12 +93,12 @@ export default function HeroInput({ onConnect }: { onConnect: (url: string) => v
                 {
                   step: '02',
                   title: 'AI analyzes your codebase',
-                  body: 'We map surface area, APIs, and extension points.',
+                  body: 'We simulate analysis and show what the dashboard could look like.',
                 },
                 {
                   step: '03',
                   title: 'Users build features with prompts',
-                  body: 'Ship prompt-driven extensions safely inside your product.',
+                  body: 'The long-term idea: prompt-built extensions (still experimental).',
                 },
               ].map((c) => (
                 <div

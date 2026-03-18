@@ -22,7 +22,7 @@ export default function Sidebar({
         </div>
         <div>
           <div className="font-display text-sm font-semibold text-white">aiext</div>
-          <div className="text-xs text-white/45">Developer dashboard</div>
+          <div className="text-xs text-white/45">Open-source dashboard</div>
         </div>
       </div>
 
@@ -51,8 +51,8 @@ export default function Sidebar({
       </nav>
 
       <div className="mt-auto rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-white/60">
-        <div className="font-mono">aiext://platform</div>
-        <div className="mt-1">Secure prompt-based extensibility.</div>
+        <div className="font-mono">aiext://oss</div>
+        <div className="mt-1">Built in public. Expect rough edges.</div>
       </div>
     </aside>
   )
