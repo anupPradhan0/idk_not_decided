@@ -1,3 +1,5 @@
+import { postAnalyzeRepo } from './api'
+
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
 
 export type RepoAnalysis = {
@@ -33,16 +35,12 @@ export type UserItem = {
 }
 
 export async function analyzeRepo(repoUrl: string): Promise<RepoAnalysis> {
-  await sleep(900)
-
-  if (!repoUrl.startsWith('https://github.com/')) {
-    throw new Error('Invalid GitHub URL')
-  }
+  const saved = await postAnalyzeRepo(repoUrl)
 
   return {
-    repoUrl,
-    connectedAt: new Date().toISOString(),
-    repoName: repoUrl.replace('https://github.com/', ''),
+    repoUrl: saved.repoUrl,
+    connectedAt: saved.connectedAt,
+    repoName: saved.repoName,
   }
 }
 
