@@ -10,13 +10,18 @@ type AnalyzeRepoApiResponse = {
 }
 
 export async function postAnalyzeRepo(repoUrl: string): Promise<AnalyzeRepoApiResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/repos/analyze`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ repoUrl }),
-  })
+  let response: Response
+  try {
+    response = await fetch(`${API_BASE_URL}/api/repos/analyze`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ repoUrl }),
+    })
+  } catch {
+    throw new Error(`Cannot reach backend at ${API_BASE_URL}`)
+  }
 
   if (!response.ok) {
     let message = "Failed to analyze repository URL"

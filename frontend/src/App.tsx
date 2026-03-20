@@ -201,7 +201,7 @@ export default function App() {
                         </div>
                       </div>
                     ) : (
-                      <LoadingPanel label="Connecting & analyzing…" />
+                      <LoadingPanel label="Connecting & saving…" />
                     )
                   ) : activeTab === 'overview' ? (
                     <Overview repoUrl={repoUrl} />
