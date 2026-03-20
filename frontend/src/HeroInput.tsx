@@ -65,7 +65,7 @@ export default function HeroInput({ onConnect }: { onConnect: (url: string) => v
                   ].join(' ')}
                   disabled={!isValid}
                 >
-                  Connect &amp; Analyze
+                  Connect &amp; Save
                 </button>
               </div>
 
@@ -74,9 +74,7 @@ export default function HeroInput({ onConnect }: { onConnect: (url: string) => v
                   URL must start with <span className="font-mono">https://github.com/</span>
                 </p>
               ) : (
-                <p className="mt-2 text-xs text-white/45">
-                  This uses mock data + fake “analysis” calls (for now).
-                </p>
+                <p className="mt-2 text-xs text-white/45">This saves the repo URL to backend + DB.</p>
               )}
             </div>
           </div>
