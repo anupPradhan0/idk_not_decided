@@ -7,8 +7,6 @@ services:
       POSTGRES_DB: aiext
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -29,25 +27,25 @@ services:
         condition: service_healthy
     environment:
       APP_NAME: aiext backend
-      APP_ENV: development
+      APP_ENV: production
       DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/aiext
-      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
-    ports:
-      - "8000:8000"
+      CORS_ORIGINS: http://localhost,http://127.0.0.1
+    expose:
+      - "8000"
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
-      target: frontend
+      target: frontend-prod
+      args:
+        VITE_API_URL: ""
     container_name: aiext-frontend
     restart: unless-stopped
     depends_on:
       - backend
-    environment:
-      VITE_API_URL: http://localhost:8000
     ports:
-      - "5173:5173"
+      - "80:80"
 
 volumes:
   postgres_data:
