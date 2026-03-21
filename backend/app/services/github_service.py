@@ -24,6 +24,9 @@ async def fetch_repo_data(owner: str, repo: str) -> dict:
         if "/" not in item["path"] and not item["path"].startswith(".")
     ]
 
+    all_items = tree_data.get("tree", [])
+    total_file_count = len([item for item in all_items if item["type"] == "blob" and not item["path"].startswith(".")])
+
     return {
         "stats": {
             "stars": repo_data.get("stargazers_count"),
@@ -38,7 +41,8 @@ async def fetch_repo_data(owner: str, repo: str) -> dict:
             {"name": branch["name"]}
             for branch in branches_data
         ],
+        "total_file_count": total_file_count,
         "root_file_count": len([item for item in root_items if item["type"] == "blob"]),
         "root_folder_count": len([item for item in root_items if item["type"] == "tree"]),
-        "truncated": False
+        "truncated": tree_data.get("truncated", False)
     }

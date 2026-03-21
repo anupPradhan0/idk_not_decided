@@ -22,6 +22,7 @@ interface GithubData {
   stats: RepoStats
   tree: TreeNode[]
   branches: GithubBranch[]
+  totalFileCount: number
   rootFileCount: number
   rootFolderCount: number
   truncated: boolean

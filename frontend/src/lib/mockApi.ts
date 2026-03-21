@@ -7,6 +7,7 @@ export async function analyzeRepo(repoUrl: string) {
   if (response.github) {
     response.github = {
       ...response.github,
+      totalFileCount: (response.github as any).total_file_count,
       rootFileCount: (response.github as any).root_file_count,
       rootFolderCount: (response.github as any).root_folder_count,
       stats: {

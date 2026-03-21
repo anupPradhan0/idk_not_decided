@@ -43,6 +43,7 @@ async def analyze_repo(payload: AnalyzeRepoRequest, db: Session = Depends(get_db
             stats=GitHubStats(**github_response["stats"]),
             tree=[GitHubTreeItem(**item) for item in github_response["tree"]],
             branches=[GitHubBranch(**item) for item in github_response["branches"]],
+            total_file_count=github_response["total_file_count"],
             root_file_count=github_response["root_file_count"],
             root_folder_count=github_response["root_folder_count"],
             truncated=github_response["truncated"],

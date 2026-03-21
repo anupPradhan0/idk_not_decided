@@ -43,6 +43,7 @@ class GitHubData(BaseModel):
     stats: GitHubStats
     tree: list[GitHubTreeItem]
     branches: list[GitHubBranch]
+    total_file_count: int
     root_file_count: int
     root_folder_count: int
     truncated: bool

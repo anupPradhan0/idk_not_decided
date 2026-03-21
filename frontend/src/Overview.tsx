@@ -15,6 +15,7 @@ interface RepoStats {
 
 interface GithubData {
   stats: RepoStats
+  totalFileCount: number
   rootFileCount: number
   rootFolderCount: number
   branches: Array<{ name: string }>
@@ -89,15 +90,15 @@ export default function Overview({ repo, github }: OverviewProps) {
           </div>
         </div>
 
-        {/* Files */}
+        {/* Total Files */}
         <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
           <div className="flex items-center gap-3">
             <span className="text-2xl">📄</span>
             <div>
               <div className="text-2xl font-semibold text-white">
-                {github.rootFileCount}
+                {github.totalFileCount.toLocaleString()}
               </div>
-              <div className="text-xs text-white/55">Files</div>
+              <div className="text-xs text-white/55">Total Files</div>
             </div>
           </div>
         </div>
@@ -110,7 +111,7 @@ export default function Overview({ repo, github }: OverviewProps) {
               <div className="text-2xl font-semibold text-white">
                 {github.rootFolderCount}
               </div>
-              <div className="text-xs text-white/55">Folders</div>
+              <div className="text-xs text-white/55">Root Folders</div>
             </div>
           </div>
         </div>
