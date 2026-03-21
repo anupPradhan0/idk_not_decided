@@ -2,8 +2,8 @@ type TabId = 'overview' | 'extensions' | 'users' | 'settings'
 
 const nav: Array<{ id: TabId; label: string }> = [
   { id: 'overview', label: 'Overview' },
-  { id: 'extensions', label: 'Extensions' },
-  { id: 'users', label: 'Users' },
+  { id: 'extensions', label: 'File Tree' },
+  { id: 'users', label: 'Branches' },
   { id: 'settings', label: 'Settings' },
 ]
 

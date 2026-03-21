@@ -32,6 +32,7 @@ services:
       APP_ENV: development
       DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/aiext
       CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     ports:
       - "8000:8000"
     volumes:

@@ -1,142 +1,134 @@
-import { useQuery } from '@tanstack/react-query'
-import { fetchOverview } from './lib/mockApi'
-
-type Stat = { label: string; value: string | number }
-type Activity = { id: string; user: string; prompt: string; when: string }
-type Repo = { id: string; name: string; url: string; status: string }
-
-type OverviewData = {
-  stats: Stat[]
-  activity: Activity[]
-  connectedRepos: Repo[]
+interface RepoInfo {
+  repoName: string
+  owner: string
+  repoUrl: string
 }
 
-function StatCard({ label, value }: Stat) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
-      <div className="text-xs text-white/55">{label}</div>
-      <div className="mt-2 font-mono text-2xl font-semibold text-white">{value}</div>
-    </div>
-  )
+interface RepoStats {
+  stars: number | null
+  forks: number | null
+  language: string | null
+  description: string | null
+  visibility: string | null
+  defaultBranch: string | null
 }
 
-function Section({
-  title,
-  children,
-  right,
-}: {
-  title: string
-  children: React.ReactNode
-  right?: React.ReactNode
-}) {
-  return (
-    <section className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display text-base font-semibold text-white">{title}</h2>
-        {right}
-      </div>
-      <div className="mt-4">{children}</div>
-    </section>
-  )
+interface GithubData {
+  stats: RepoStats
+  totalFileCount: number
+  rootFileCount: number
+  rootFolderCount: number
+  branches: Array<{ name: string }>
 }
 
-export default function Overview({ repoUrl }: { repoUrl: string }) {
-  const q = useQuery<OverviewData>({
-    queryKey: ['overview', repoUrl],
-    queryFn: () => fetchOverview(repoUrl),
-  })
+interface OverviewProps {
+  repo: RepoInfo
+  github: GithubData
+}
 
-  if (q.isLoading) {
-    return (
-      <div className="grid gap-4">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-[92px] animate-pulse rounded-2xl border border-white/10 bg-white/5"
-            />
-          ))}
-        </div>
-        <div className="h-64 animate-pulse rounded-2xl border border-white/10 bg-white/5" />
-      </div>
-    )
-  }
-
-  if (q.isError) {
-    return (
-      <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
-        {q.error instanceof Error ? q.error.message : 'Failed to load overview.'}
-      </div>
-    )
-  }
-
-  if (!q.data) return null
-  const data = q.data
-
+export default function Overview({ repo, github }: OverviewProps) {
   return (
-    <div className="grid gap-4">
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {data.stats.map((s) => (
-          <StatCard key={s.label} label={s.label} value={s.value} />
-        ))}
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <Section
-          title="Recent activity"
-          right={
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/60">
-              Live prompts
-            </span>
-          }
-        >
-          <ul className="divide-y divide-white/10">
-            {data.activity.map((a) => (
-              <li key={a.id} className="py-3">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-sm text-white">
-                      <span className="font-medium">{a.user}</span>{' '}
-                      <span className="text-white/60">submitted:</span>
-                    </div>
-                    <div className="mt-1 font-mono text-xs leading-relaxed text-white/70">
-                      “{a.prompt}”
-                    </div>
-                  </div>
-                  <div className="shrink-0 font-mono text-xs text-white/45">{a.when}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        <Section title="Connected repos">
-          <div className="grid gap-3">
-            {data.connectedRepos.map((r) => (
-              <a
-                key={r.id}
-                href={r.url}
-                target="_blank"
-                rel="noreferrer"
-                className="group rounded-xl border border-white/10 bg-white/5 p-4 transition hover:bg-white/7"
+    <div className="space-y-6">
+      {/* Project Header */}
+      <div className="rounded-2xl border border-white/10 bg-black/20 p-6 backdrop-blur">
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="font-display text-2xl font-semibold text-white">
+              {repo.repoName}
+            </h1>
+            <p className="mt-2 text-sm text-white/70">{github.stats.description || "No description"}</p>
+            <div className="mt-3 flex items-center gap-2">
+              <span
+                className={`px-2 py-1 rounded text-xs font-medium ${
+                  github.stats.visibility === "public"
+                    ? "bg-emerald-400/10 text-emerald-200 ring-1 ring-emerald-400/20"
+                    : "bg-white/10 text-white/70 ring-1 ring-white/10"
+                }`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="font-mono text-xs text-white/55">GitHub</div>
-                    <div className="mt-1 font-medium text-white">{r.name}</div>
-                    <div className="mt-1 text-xs text-white/50">Click to open repo</div>
-                  </div>
-                  <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-400/20">
-                    {r.status}
-                  </span>
-                </div>
-                <div className="mt-3 h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 transition group-hover:opacity-100" />
-              </a>
-            ))}
+                {github.stats.visibility?.charAt(0).toUpperCase() + (github.stats.visibility?.slice(1) || "")}
+              </span>
+              <span className="text-xs text-white/45">•</span>
+              <span className="text-sm text-white/60">{github.stats.defaultBranch}</span>
+            </div>
           </div>
-        </Section>
+          <a
+            href={repo.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white/80 transition hover:bg-white/10"
+          >
+            View on GitHub
+          </a>
+        </div>
       </div>
+
+      {/* Stats Grid */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Stars */}
+        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">⭐</span>
+            <div>
+              <div className="text-2xl font-semibold text-white">
+                {github.stats.stars?.toLocaleString() || "—"}
+              </div>
+              <div className="text-xs text-white/55">Stars</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Forks */}
+        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🍴</span>
+            <div>
+              <div className="text-2xl font-semibold text-white">
+                {github.stats.forks?.toLocaleString() || "—"}
+              </div>
+              <div className="text-xs text-white/55">Forks</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Files */}
+        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">📄</span>
+            <div>
+              <div className="text-2xl font-semibold text-white">
+                {github.totalFileCount.toLocaleString()}
+              </div>
+              <div className="text-xs text-white/55">Total Files</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Folders */}
+        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">📁</span>
+            <div>
+              <div className="text-2xl font-semibold text-white">
+                {github.rootFolderCount}
+              </div>
+              <div className="text-xs text-white/55">Root Folders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Language */}
+      {github.stats.language && (
+        <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <span className="w-4 h-4 rounded-full bg-blue-500"></span>
+            <div>
+              <div className="text-sm font-medium text-white">{github.stats.language}</div>
+              <div className="text-xs text-white/55">Primary Language</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
-
