@@ -2,8 +2,9 @@ import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import HeroInput from './HeroInput'
 import Sidebar from './Sidebar'
-import RepoStats from './RepoStats'
-import FileTree from './FileTree'
+import Overview from './Overview'
+import Extensions from './Extensions'
+import Users from './Users'
 import { analyzeRepo } from './lib/mockApi'
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -115,9 +116,9 @@ export default function App() {
                     {activeTab === 'overview'
                       ? 'Overview'
                       : activeTab === 'extensions'
-                        ? 'Extensions'
+                        ? 'File Tree'
                         : activeTab === 'users'
-                          ? 'Users'
+                          ? 'Branches'
                           : 'Settings'}
                     </div>
                   </div>
@@ -142,7 +143,7 @@ export default function App() {
                 </button>
               </header>
 
-              <main className="min-w-0 flex-1 px-4 py-4 sm:px-5 sm:py-5">
+              <main className="min-w-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-5">
                 <div className="transition-all duration-250 ease-out">
                   {!connected ? (
                     analysis.isError ? (
@@ -197,27 +198,34 @@ export default function App() {
                         </div>
                       )}
 
-                      {/* GitHub Data Components */}
-                      {analysis.data?.github && (
-                        <div className="mb-4 grid gap-4">
-                          <RepoStats stats={analysis.data.github.stats} />
-                          <FileTree 
-                            tree={analysis.data.github.tree} 
-                            truncated={analysis.data.github.truncated} 
-                          />
-                        </div>
+                      {/* Tab Content */}
+                      {activeTab === 'overview' && analysis.data?.github && (
+                        <Overview
+                          repo={analysis.data.repo}
+                          github={analysis.data.github}
+                        />
                       )}
 
-                      {/* Tab Content */}
-                      <div className="rounded-2xl border border-white/10 bg-black/20 p-8 backdrop-blur">
-                        <h2 className="font-display text-lg font-semibold text-white mb-2">
-                          {activeTab === 'overview' && 'Overview'}
-                          {activeTab === 'extensions' && 'Extensions'}
-                          {activeTab === 'users' && 'Users'}
-                          {activeTab === 'settings' && 'Settings'}
-                        </h2>
-                        <p className="text-white/60">Coming soon...</p>
-                      </div>
+                      {activeTab === 'extensions' && analysis.data?.github && (
+                        <Extensions
+                          tree={analysis.data.github.tree}
+                          truncated={analysis.data.github.truncated}
+                        />
+                      )}
+
+                      {activeTab === 'users' && analysis.data?.github && (
+                        <Users
+                          branches={analysis.data.github.branches}
+                          defaultBranch={analysis.data.github.stats.defaultBranch}
+                        />
+                      )}
+
+                      {activeTab === 'settings' && (
+                        <div className="rounded-2xl border border-white/10 bg-black/20 p-8 backdrop-blur">
+                          <h2 className="font-display text-lg font-semibold text-white mb-2">Settings</h2>
+                          <p className="text-white/60">Coming soon...</p>
+                        </div>
+                      )}
                     </>
                   )}
                 </div>

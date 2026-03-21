@@ -6,6 +6,7 @@ interface RepoStats {
   language: string | null
   description: string | null
   visibility: string | null
+  defaultBranch: string | null
 }
 
 interface TreeNode {
@@ -13,9 +14,16 @@ interface TreeNode {
   type: "blob" | "tree"
 }
 
+interface GithubBranch {
+  name: string
+}
+
 interface GithubData {
   stats: RepoStats
   tree: TreeNode[]
+  branches: GithubBranch[]
+  rootFileCount: number
+  rootFolderCount: number
   truncated: boolean
 }
 

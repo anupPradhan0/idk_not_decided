@@ -27,6 +27,7 @@ class GitHubStats(BaseModel):
     language: Optional[str] = None
     description: Optional[str] = None
     visibility: Optional[str] = None
+    default_branch: Optional[str] = None
 
 
 class GitHubTreeItem(BaseModel):
@@ -34,9 +35,16 @@ class GitHubTreeItem(BaseModel):
     type: str
 
 
+class GitHubBranch(BaseModel):
+    name: str
+
+
 class GitHubData(BaseModel):
     stats: GitHubStats
     tree: list[GitHubTreeItem]
+    branches: list[GitHubBranch]
+    root_file_count: int
+    root_folder_count: int
     truncated: bool
 
 

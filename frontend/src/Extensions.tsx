@@ -1,8 +1,19 @@
-export default function Extensions() {
+import FileTree from './FileTree'
+
+interface TreeNode {
+  path: string
+  type: "blob" | "tree"
+}
+
+interface ExtensionsProps {
+  tree: TreeNode[]
+  truncated: boolean
+}
+
+export default function Extensions({ tree, truncated }: ExtensionsProps) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-8 backdrop-blur">
-      <h2 className="font-display text-lg font-semibold text-white mb-4">Extensions</h2>
-      <p className="text-white/60">Extension management coming soon...</p>
+    <div className="space-y-4">
+      <FileTree tree={tree} truncated={truncated} />
     </div>
   )
 }

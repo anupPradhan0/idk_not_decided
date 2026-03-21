@@ -9,6 +9,7 @@ from app.schemas.repository import (
     GitHubData,
     GitHubStats,
     GitHubTreeItem,
+    GitHubBranch,
 )
 from app.services.github_url import parse_github_repo_url
 from app.services.repositories import create_or_get_repository
@@ -41,6 +42,9 @@ async def analyze_repo(payload: AnalyzeRepoRequest, db: Session = Depends(get_db
         github_data = GitHubData(
             stats=GitHubStats(**github_response["stats"]),
             tree=[GitHubTreeItem(**item) for item in github_response["tree"]],
+            branches=[GitHubBranch(**item) for item in github_response["branches"]],
+            root_file_count=github_response["root_file_count"],
+            root_folder_count=github_response["root_folder_count"],
             truncated=github_response["truncated"],
         )
     except Exception as e:
