@@ -24,32 +24,57 @@ export default function FileTree({ tree, truncated }: FileTreeProps) {
 
   return (
     <div className="rounded-2xl border border-white/10 bg-black/20 backdrop-blur overflow-hidden">
-      <div className="bg-white/5 px-4 py-2 border-b border-white/10">
-        <h3 className="text-sm font-semibold text-white">File Tree</h3>
+      <div className="bg-white/5 px-4 py-3 border-b border-white/10">
+        <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+          <span className="text-lg">🌳</span>
+          Repository Structure
+        </h3>
       </div>
 
-      <div className="max-h-[400px] overflow-y-auto">
-        <ul className="py-2">
+      <div className="max-h-[500px] overflow-y-auto">
+        <div className="py-3">
           {tree.map((node, index) => {
             const depth = getDepth(node.path)
             const fileName = getFileName(node.path)
             const icon = getIcon(node.type)
-            const paddingLeft = depth * 16
+            const paddingLeft = depth * 24
 
             return (
-              <li
+              <div
                 key={`${node.path}-${index}`}
-                className="px-4 py-1 hover:bg-white/5 cursor-pointer transition-colors"
+                className="flex items-center gap-2 px-4 py-1.5 hover:bg-white/5 transition-colors cursor-pointer group relative"
                 style={{ paddingLeft: `${paddingLeft + 16}px` }}
               >
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-base">{icon}</span>
-                  <span className="text-white/70 font-mono">{fileName}</span>
-                </div>
-              </li>
+                {/* Vertical line for nested items */}
+                {depth > 0 && (
+                  <div 
+                    className="absolute border-l border-white/10 h-full -ml-4"
+                    style={{ left: `${paddingLeft}px` }}
+                  />
+                )}
+                
+                {/* Icon */}
+                <span className={`text-base ${node.type === "tree" ? "text-blue-400" : "text-white/50"}`}>
+                  {icon}
+                </span>
+                
+                {/* File/Folder name */}
+                <span className={`text-sm font-mono ${
+                  node.type === "tree" ? "text-white font-medium" : "text-white/60"
+                } group-hover:text-white transition-colors`}>
+                  {fileName}
+                </span>
+                
+                {/* Type indicator */}
+                {node.type === "tree" && (
+                  <span className="ml-auto text-xs text-white/30">
+                    folder
+                  </span>
+                )}
+              </div>
             )
           })}
-        </ul>
+        </div>
 
         {truncated && (
           <div className="px-4 py-3 bg-yellow-500/10 border-t border-yellow-500/20">
