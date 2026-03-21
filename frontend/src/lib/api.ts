@@ -1,15 +1,38 @@
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "")
 
-type AnalyzeRepoApiResponse = {
-  id: string
-  repoUrl: string
-  connectedAt: string
-  repoName: string
-  owner: string
-  status: string
+interface RepoStats {
+  stars: number | null
+  forks: number | null
+  language: string | null
+  description: string | null
+  visibility: string | null
 }
 
-export async function postAnalyzeRepo(repoUrl: string): Promise<AnalyzeRepoApiResponse> {
+interface TreeNode {
+  path: string
+  type: "blob" | "tree"
+}
+
+interface GithubData {
+  stats: RepoStats
+  tree: TreeNode[]
+  truncated: boolean
+}
+
+interface AnalyzeResponse {
+  repo: {
+    id: string
+    repoUrl: string
+    connectedAt: string
+    repoName: string
+    owner: string
+    status: string
+  }
+  github: GithubData | null
+  githubError?: string
+}
+
+export async function postAnalyzeRepo(repoUrl: string): Promise<AnalyzeResponse> {
   let response: Response
   try {
     response = await fetch(`${API_BASE_URL}/api/repos/analyze`, {
@@ -36,5 +59,5 @@ export async function postAnalyzeRepo(repoUrl: string): Promise<AnalyzeRepoApiRe
     throw new Error(message)
   }
 
-  return (await response.json()) as AnalyzeRepoApiResponse
+  return (await response.json()) as AnalyzeResponse
 }

@@ -2,9 +2,8 @@ import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import HeroInput from './HeroInput'
 import Sidebar from './Sidebar'
-import Overview from './Overview'
-import Extensions from './Extensions'
-import Users from './Users'
+import RepoStats from './RepoStats'
+import FileTree from './FileTree'
 import { analyzeRepo } from './lib/mockApi'
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -22,30 +21,6 @@ function LoadingPanel({ label }: { label: string }) {
       <div className="flex items-center gap-3">
         <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/25 border-t-[color:var(--accent)]" />
         <div className="text-sm text-white/70">{label}</div>
-      </div>
-      <div className="mt-3 font-mono text-xs text-white/45">
-        mock analysis • placeholder data • UI sandbox
-      </div>
-    </div>
-  )
-}
-
-function SettingsPlaceholder() {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-5 backdrop-blur">
-      <h2 className="font-display text-base font-semibold text-white">Settings</h2>
-      <p className="mt-2 text-sm text-white/60">
-        Placeholder settings panel (theme, prompt policies, future ideas).
-      </p>
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-xs text-white/55">Prompt sandbox</div>
-          <div className="mt-2 font-mono text-sm text-white/80">enabled</div>
-        </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-xs text-white/55">Default model</div>
-          <div className="mt-2 font-mono text-sm text-white/80">mock://model</div>
-        </div>
       </div>
     </div>
   )
@@ -144,7 +119,7 @@ export default function App() {
                         : activeTab === 'users'
                           ? 'Users'
                           : 'Settings'}
-                  </div>
+                    </div>
                   </div>
                   <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-white/55">
                     <span className="rounded-full border border-[color:var(--stroke)] bg-[color:var(--panel)] px-3 py-1 font-mono text-white/60">
@@ -203,14 +178,47 @@ export default function App() {
                     ) : (
                       <LoadingPanel label="Connecting & saving…" />
                     )
-                  ) : activeTab === 'overview' ? (
-                    <Overview repoUrl={repoUrl} />
-                  ) : activeTab === 'extensions' ? (
-                    <Extensions />
-                  ) : activeTab === 'users' ? (
-                    <Users />
                   ) : (
-                    <SettingsPlaceholder />
+                    <>
+                      {/* GitHub Error Banner */}
+                      {analysis.data?.githubError && (
+                        <div className="mb-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+                          <div className="flex items-start gap-3">
+                            <span className="text-lg">⚠️</span>
+                            <div>
+                              <div className="text-sm font-semibold text-yellow-200">
+                                Could not load GitHub data
+                              </div>
+                              <div className="mt-1 text-sm text-yellow-200/80">
+                                {analysis.data.githubError}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* GitHub Data Components */}
+                      {analysis.data?.github && (
+                        <div className="mb-4 grid gap-4">
+                          <RepoStats stats={analysis.data.github.stats} />
+                          <FileTree 
+                            tree={analysis.data.github.tree} 
+                            truncated={analysis.data.github.truncated} 
+                          />
+                        </div>
+                      )}
+
+                      {/* Tab Content */}
+                      <div className="rounded-2xl border border-white/10 bg-black/20 p-8 backdrop-blur">
+                        <h2 className="font-display text-lg font-semibold text-white mb-2">
+                          {activeTab === 'overview' && 'Overview'}
+                          {activeTab === 'extensions' && 'Extensions'}
+                          {activeTab === 'users' && 'Users'}
+                          {activeTab === 'settings' && 'Settings'}
+                        </h2>
+                        <p className="text-white/60">Coming soon...</p>
+                      </div>
+                    </>
                   )}
                 </div>
               </main>
@@ -221,4 +229,3 @@ export default function App() {
     </Shell>
   )
 }
-
