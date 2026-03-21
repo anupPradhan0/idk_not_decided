@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: aiext-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aiext
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d aiext"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    container_name: aiext-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_NAME: aiext backend
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@postgres:5432/aiext
+      CORS_ORIGINS: http://localhost,http://127.0.0.1
+    expose:
+      - "8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend-prod
+      args:
+        VITE_API_URL: ""
+    container_name: aiext-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
